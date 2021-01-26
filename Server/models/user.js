@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
         required:true
     },
     contacts:[{
-        type: ObjectId,
+        type: mongoose.ObjectId,
         ref: 'Contact'
     }],
     token:{
