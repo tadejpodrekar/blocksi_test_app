@@ -23,6 +23,7 @@ db.on('error',(err)=>{
 
 app.use(Cors())
 app.use(bodyParser.json())
+
 app.get('/', (req, res) => {
     res.json({
         message:"Home page"
