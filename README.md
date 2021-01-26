@@ -2,7 +2,7 @@
 Test app for Blocksi job application
 
 ## .env setup
-In **/Server** folder add .env file containing the following variables
+In **/Server** folder add .env file containing the following variables:
 
   **MONGODB_URI** = {your MongoDB atlas link}
 
