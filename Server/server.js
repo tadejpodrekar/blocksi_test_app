@@ -7,14 +7,16 @@ const bodyParser = require('body-parser')
 const Cors = require('cors')
 const app = express()
 
-var corsOptions = {
+const corsOptions = {
     origin: 'http://localhost:5000/',
     optionsSuccessStatus: 200
-  }
+}
 
 app.use(Cors(corsOptions))
 app.use(bodyParser.json())
 app.use('/register', require('./routes/registration'))
+app.use('/login', require('./routes/login'))
+app.use('/contacts', require('./routes/contacts'))
 
 app.listen(process.env.API_PORT,()=>{
     console.log("Server is running on port", process.env.API_PORT)
