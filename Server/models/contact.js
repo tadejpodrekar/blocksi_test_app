@@ -16,8 +16,7 @@ const contactSchema = new mongoose.Schema({
         type:String
     },
     phone_num:{
-        type:String,
-        required:true
+        type:String
     }
 })
 
