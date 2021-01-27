@@ -4,17 +4,15 @@ const User = mongoose.model("User")
 const Contact = mongoose.model("Contact")
 const router = express.Router()
 const getContact = require('../middleware/getContact')
+const authUser = require('../middleware/authUser')
 
-router.use(function timeLog (req, res, next) {
-    console.log('Time: ', Date.now())
-    next()
-})
+router.use(authUser)
 
 router.get('/', async (req, res) => {
-    res.json({msg:"hello world"})
+    res.json({msg:"returning all contacts"})
 })
 
-router.get('/:id', getContact, async (req, res) => {
+router.get('/:id', getContact, (req, res) => {
     res.json({msg:"hello user", user:req.contact.id})
 })
 
