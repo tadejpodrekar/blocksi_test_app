@@ -1,15 +1,19 @@
 const mongoose = require('mongoose')
-const uniqueValidator = require('mongoose-unique-validator')
 
 const contactSchema = new mongoose.Schema({
     username:{
         type:String,
-        required:true,
-        unique:true
+        required:true
     },
     email:{
         type:String,
         required:true
+    },
+    first_name:{
+        type:String
+    },
+    last_name:{
+        type:String
     },
     phone_num:{
         type:String,
@@ -17,5 +21,4 @@ const contactSchema = new mongoose.Schema({
     }
 })
 
-contactSchema.plugin(uniqueValidator)
 mongoose.model("Contact",contactSchema)

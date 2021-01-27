@@ -14,16 +14,7 @@ const userSchema = new mongoose.Schema({
     contacts:[{
         type: mongoose.ObjectId,
         ref: 'Contact'
-    }],
-    token:{
-        type:String,
-        required:true
-    },
-    role:{
-        type:Number,
-        required:true,
-        default:0
-    }
+    }]
 })
 
 userSchema.plugin(uniqueValidator)
