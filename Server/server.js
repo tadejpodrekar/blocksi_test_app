@@ -8,7 +8,7 @@ const Cors = require('cors')
 const app = express()
 
 const corsOptions = {
-    origin: 'http://localhost:5000/',
+    origin: process.env.CLIENT_URI || 'http://localhost:5000/',
     optionsSuccessStatus: 200
 }
 
