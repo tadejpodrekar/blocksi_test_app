@@ -6,11 +6,16 @@ const router = express.Router()
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
 
-    const user = new User({ username: username, email: email, password: password })
-    user.save(function (err) {
-        console.log(err)
-        res.json(err)
-    })
+    const user = new User({ username, email, password })
+    try
+    {
+        const newUser = await user.save()
+        res.status(201).json(newUser)
+    }
+    catch(err)
+    {
+        res.status(400).json({message:err.message})
+    }
 })
 
 module.exports = router
