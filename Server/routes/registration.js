@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
     try
     {
         const newUser = await user.save()
-        const token = jwt.sign({ id:newUser._id }, process.env.JWT_SECRET)
+        const token = jwt.sign({ user:newUser }, process.env.JWT_SECRET)
 
         res.status(201).json({
             auth: true,

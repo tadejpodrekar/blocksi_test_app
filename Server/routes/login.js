@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
             console.log(match)
             if(match)
             {
-                const token = jwt.sign({ id:user._id }, process.env.JWT_SECRET)
+                const token = jwt.sign({ user }, process.env.JWT_SECRET)
                 res.status(200).json({
                     auth: true,
                     accessToken: token,
