@@ -9,7 +9,7 @@ const authUser = require('../middleware/authUser')
 router.use(authUser)
 
 router.post('/', async (req, res) => {
-    const { username, email, first_name, last_name, phone_num } = req.body;
+    const { username, email, first_name, last_name, phone_num } = req.body
 
     const contact = new Contact({ username, email, first_name, last_name, phone_num })
     try
@@ -30,19 +30,57 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
     const userContacts = await User.findById(req.user._id).populate('contacts')
     console.log(userContacts)
-    res.json({message:"returning all contacts", contacts:userContacts.contacts})
+    res.status(200).json({message:"returning all contacts", contacts:userContacts.contacts})
 })
 
-router.get('/:id', getContact, (req, res) => {
-    res.json({msg:"hello user", user:req.contact.id})
+router.get('/:id', getContact, async (req, res) => {
+    if(req.user.contacts.indexOf(req.params.id) > -1)
+    {
+        const foundContact = await Contact.findById(req.params.id)
+        res.status(200).json({message:"Contact found", contact:foundContact})
+    }
+    else
+    {
+        res.status(404).json({message:"Contact not found"})
+    }
 })
 
 router.put('/:id', getContact, async (req, res) => {
-
+    console.log(req.user.contacts.indexOf(req.params.id))
+    if(req.user.contacts.indexOf(req.params.id) > -1)
+    {
+        const { username, email, first_name, last_name, phone_num } = req.body
+        let updateObj = {
+            username,
+            email,
+            first_name,
+            last_name,
+            phone_num
+        }
+        for(let value in updateObj) if(!updateObj[value]) delete(updateObj[value])
+        const foundContact = await Contact.updateOne({ _id: req.params.id }, { username, email, first_name, last_name, phone_num })
+        res.status(200).json({message:"Contact found", contact:foundContact})
+    }
+    else
+    {
+        res.status(404).json({message:"Contact not found"})
+    }
 })
 
 router.delete('/:id', getContact, async (req, res) => {
-    
+    if(req.user.contacts.indexOf(req.params.id) > -1)
+    {
+        const userContacts = await User.findById(req.user._id)
+        userContacts.contacts.splice(userContacts.contacts.indexOf(req.params.id), 1)[0]
+        await User.updateOne(userContacts)
+        await Contact.deleteOne(req.contact)
+
+        res.status(200).json({message:"Contact found and deleted"})
+    }
+    else
+    {
+        res.status(404).json({message:"Contact not found"})
+    }
 })
 
 module.exports = router
