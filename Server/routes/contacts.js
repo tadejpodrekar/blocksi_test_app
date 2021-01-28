@@ -34,7 +34,8 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/:id', getContact, async (req, res) => {
-    if(req.user.contacts.indexOf(req.params.id) > -1)
+    let userContacts = await User.findById(req.user._id)
+    if(userContacts.contacts.indexOf(req.params.id) > -1)
     {
         const foundContact = await Contact.findById(req.params.id)
         res.status(200).json({message:"Contact found", contact:foundContact})
@@ -47,7 +48,8 @@ router.get('/:id', getContact, async (req, res) => {
 
 router.put('/:id', getContact, async (req, res) => {
     console.log(req.user.contacts.indexOf(req.params.id))
-    if(req.user.contacts.indexOf(req.params.id) > -1)
+    let userContacts = await User.findById(req.user._id)
+    if(userContacts.contacts.indexOf(req.params.id) > -1)
     {
         const { username, email, first_name, last_name, phone_num } = req.body
         let updateObj = {
@@ -57,7 +59,7 @@ router.put('/:id', getContact, async (req, res) => {
             last_name,
             phone_num
         }
-        for(let value in updateObj) if(!updateObj[value]) delete(updateObj[value])
+        for(let value in updateObj) if(!updateObj[value] || !value) delete(updateObj[value]) // ne dela, se vedno updata z null vrednostmi
         const foundContact = await Contact.updateOne({ _id: req.params.id }, { username, email, first_name, last_name, phone_num })
         res.status(200).json({message:"Contact found", contact:foundContact})
     }
@@ -68,9 +70,11 @@ router.put('/:id', getContact, async (req, res) => {
 })
 
 router.delete('/:id', getContact, async (req, res) => {
-    if(req.user.contacts.indexOf(req.params.id) > -1)
+    console.log(req.user._id)
+    let userContacts = await User.findById(req.user._id)
+    console.log(userContacts)
+    if(userContacts.contacts.indexOf(req.params.id) > -1)
     {
-        const userContacts = await User.findById(req.user._id)
         userContacts.contacts.splice(userContacts.contacts.indexOf(req.params.id), 1)[0]
         await User.updateOne(userContacts)
         await Contact.deleteOne(req.contact)

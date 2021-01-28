@@ -5,7 +5,7 @@ async function getContact(req, res, next) {
     try
     {
         var contact = await Contact.findById(req.params.id)
-        if(contact == null)
+        if(!contact)
         {
             return res.status(404).json({ message: 'Cant find contact'})
         }
