@@ -8,13 +8,13 @@ function authenticateToken(req, res, next) {
 	}
 	else
 	{
-		jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+		jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 			if(err)
 			{
 				console.log(err, 'e-authT')
 				return res.sendStatus(403)
 			}
-			req.user = user
+			req.user = decoded.user
 			next()
 		})
 	}
