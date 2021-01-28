@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
     try
     {
         const newContact = await contact.save()
-        const newUser = await User.findOneAndUpdate({_id: req.user._id}, {$push: { "contacts": newContact._id }})
+        await User.findOneAndUpdate({_id: req.user._id}, {$push: { "contacts": newContact._id }})
         res.status(201).json({
             contact: newContact,
             message: 'Successfully created contact'
@@ -28,7 +28,9 @@ router.post('/', async (req, res) => {
 })
 
 router.get('/', async (req, res) => {
-    res.json({msg:"returning all contacts"})
+    const userContacts = await User.findById(req.user._id).populate('contacts')
+    console.log(userContacts)
+    res.json({message:"returning all contacts", contacts:userContacts.contacts})
 })
 
 router.get('/:id', getContact, (req, res) => {
