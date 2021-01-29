@@ -17,5 +17,5 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
-userSchema.plugin(uniqueValidator)
+userSchema.plugin(uniqueValidator, { message: 'Error, expected username to be unique.' })
 mongoose.model("User",userSchema)
