@@ -52,15 +52,14 @@ router.put('/:id', getContact, async (req, res) => {
     if(userContacts.contacts.indexOf(req.params.id) > -1)
     {
         const { username, email, first_name, last_name, phone_num } = req.body
-        let updateObj = {
-            username,
-            email,
-            first_name,
-            last_name,
-            phone_num
-        }
-        for(let value in updateObj) if(!updateObj[value] || !value) delete(updateObj[value]) // ne dela, se vedno updata z null vrednostmi
-        const foundContact = await Contact.updateOne({ _id: req.params.id }, { username, email, first_name, last_name, phone_num })
+        let updateObj = {}
+        if(username) {updateObj.username = username}
+        if(email) {updateObj.email = email}
+        if(first_name) {updateObj.first_name = first_name}
+        if(last_name) {updateObj.last_name = last_name}
+        if(phone_num) {updateObj.phone_num = phone_num}
+
+        const foundContact = await Contact.updateOne({ _id: req.params.id }, updateObj)
         res.status(200).json({message:"Contact found", contact:foundContact})
     }
     else
