@@ -9,13 +9,13 @@ const contactSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    first_name:{
+    firstName:{
         type:String
     },
-    last_name:{
+    lastName:{
         type:String
     },
-    phone_num:{
+    phoneNum:{
         type:String
     }
 })
