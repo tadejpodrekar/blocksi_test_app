@@ -7,7 +7,7 @@
 					<v-icon large>{{ tab.icon }}</v-icon>
 					<div class="caption py-1">{{ tab.name }}</div>
 				</v-tab>
-				<v-tab-item @click='loggingIn = true'>
+				<v-tab-item @click='options.loggingIn = true'>
 					<v-card class="px-4">
 						<v-card-text>
 							<v-form ref="loginForm" v-model="valid" lazy-validation>
@@ -29,7 +29,7 @@
 						</v-card-text>
 					</v-card>
 				</v-tab-item>
-				<v-tab-item @click='loggingIn = false'>
+				<v-tab-item @click='options.loggingIn = false'>
 					<v-card class="px-4">
 						<v-card-text>
 							<v-form ref="registerForm" v-model="valid" lazy-validation>
@@ -118,7 +118,6 @@ export default {
 			{name:"Register", icon:"mdi-account-plus-outline"}
 		],
 		valid: true,
-		loggingIn: true,
 	
 		firstName: "",
 		lastName: "",
@@ -138,5 +137,9 @@ export default {
 			min: v => (v && v.length >= 6) || "Min 6 characters"
 		}
 	}),
+	options: {
+      loggingIn: true,
+      shouldStayLoggedIn: true,
+    },
 };
 </script>
