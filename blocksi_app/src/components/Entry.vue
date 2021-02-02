@@ -100,8 +100,8 @@
 </style>
 
 <script>
-var axios = require('axios');
-axios.defaults.baseURL = 'http://localhost:5000';
+import axios from 'axios'
+axios.defaults.baseURL = 'http://localhost:5000'
 export default {
 	name: 'Entry',
 	computed: {
@@ -118,9 +118,9 @@ export default {
 						username: this.loginUsername,
 						password: this.loginPassword
 					}).then(function (response) {
-						localStorage.setItem( 'token', JSON.stringify(response.data.accessToken) );
-						console.log(response);
-						this.$router.push({name:'contacts'})
+						localStorage.setItem( 'token', response.data.accessToken )
+						console.log(response)
+						this.$router.push('contacts')
 					})
 					.catch(function (error) {
 						console.log(error);
@@ -130,12 +130,12 @@ export default {
 						username: this.username,
 						password: this.password
 					}).then(function (response) {
-						localStorage.setItem( 'token', JSON.stringify(response.data.accessToken) );
-						console.log(response);
-						this.$router.push({name:'contacts'})
+						localStorage.setItem( 'token', response.data.accessToken )
+						console.log(response)
+						this.$router.push('contacts')
 					})
 					.catch(function (error) {
-						console.log(error);
+						console.log(error)
 					})
 				}
 			}
@@ -167,5 +167,5 @@ export default {
 			required: value => !!value || "Required."
 		}
 	}),
-};
+}
 </script>
