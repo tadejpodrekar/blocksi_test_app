@@ -9,3 +9,10 @@ In root folder add .env file containing the following variables
 * **API_PORT** = {listening port number}
 
 * **JWT_SECRET** = {unique string used for encoding JWT tokens}
+
+## Starting the API
+The API can be started by running the following commands
+
+* ```npm run install``` - to install all required dependencies
+
+* ```npm run devStart``` - to start the development server
