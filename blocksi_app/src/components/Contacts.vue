@@ -24,7 +24,7 @@
 </template>
 
 <style>
-	
+
 </style>
 
 <script>
