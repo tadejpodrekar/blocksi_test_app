@@ -1,13 +1,36 @@
 <template>
 	<v-container>
+		<v-app-bar app color="primary" dark>
+				<div class="d-flex align-center">
+					<v-img
+						alt="Vuetify Logo"
+						class="shrink mr-2"
+						contain
+						src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+						transition="scale-transition"
+						width="40"
+					/>
+
+					<v-img
+						alt="Vuetify Name"
+						class="shrink mt-1 hidden-sm-and-down"
+						contain
+						min-width="100"
+						src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
+						width="100"
+					/>
+				</div>
+
+				<v-spacer></v-spacer>
+		</v-app-bar>
 		<div id="formContainer">
 			<v-tabs v-model="tab" show-arrows background-color="blue accent-4" icons-and-text dark grow>
 				<v-tabs-slider color="blue darken-4"></v-tabs-slider>
-				<v-tab v-for="tab in tabs" :key="tab.name">
+				<v-tab v-for="tab in tabs" :key="tab.name" @change="loggingIn = !loggingIn">
 					<v-icon large>{{ tab.icon }}</v-icon>
 					<div class="caption py-1">{{ tab.name }}</div>
 				</v-tab>
-				<v-tab-item @click='options.loggingIn = true'>
+				<v-tab-item>
 					<v-card class="px-4">
 						<v-card-text>
 							<v-form ref="loginForm" v-model="valid" lazy-validation>
@@ -16,7 +39,7 @@
 										<v-text-field v-model="loginUsername" :rules="rules.required" label="Username" prepend-icon="mdi-account-circle" required></v-text-field>
 									</v-col>
 									<v-col cols="12">
-										<v-text-field v-model="loginPassword" :append-icon="show1?'eye':'eye-off'" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" hint="At least 8 characters" prepend-icon="mdi-lock" @click:append="show1 = !show1"></v-text-field>
+										<v-text-field v-model="loginPassword" :append-icon="show1?'eye':'eye-off'" :rules="rules.required" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" prepend-icon="mdi-lock" @click:append="show1 = !show1"></v-text-field>
 									</v-col>
 									<v-col class="d-flex" cols="12" sm="6" xsm="12">
 									</v-col>
@@ -29,7 +52,7 @@
 						</v-card-text>
 					</v-card>
 				</v-tab-item>
-				<v-tab-item @click='options.loggingIn = false'>
+				<v-tab-item>
 					<v-card class="px-4">
 						<v-card-text>
 							<v-form ref="registerForm" v-model="valid" lazy-validation>
@@ -44,10 +67,10 @@
 										<v-text-field v-model="email" :rules="emailRules" label="E-mail" prepend-icon="mdi-email" required></v-text-field>
 									</v-col>
 									<v-col cols="12">
-										<v-text-field v-model="username" :rules="[rules.required]" label="Username" prepend-icon="mdi-account-circle" required></v-text-field>
+										<v-text-field v-model="username" :rules="rules.required" label="Username" prepend-icon="mdi-account-circle" required></v-text-field>
 									</v-col>
 									<v-col cols="12">
-										<v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" hint="At least 8 characters" prepend-icon="mdi-lock" @click:append="show1 = !show1"></v-text-field>
+										<v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="rules.required" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" prepend-icon="mdi-lock" @click:append="show1 = !show1"></v-text-field>
 									</v-col>
 									<v-col cols="12">
 										<v-text-field block v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required, passwordMatch]" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Confirm Password" prepend-icon="mdi-lock-outline" @click:append="show1 = !show1"></v-text-field>
@@ -78,7 +101,7 @@
 
 <script>
 var axios = require('axios');
-axios.defaults.baseURL = 'http://localhost:5000/';
+axios.defaults.baseURL = 'http://localhost:5000';
 export default {
 	name: 'Entry',
 	computed: {
@@ -94,20 +117,28 @@ export default {
 					axios.post('/login',{
 						username: this.loginUsername,
 						password: this.loginPassword
+					}).then(function (response) {
+						localStorage.setItem( 'token', JSON.stringify(response.data.accessToken) );
+						console.log(response);
+						this.$router.push({name:'contacts'})
+					})
+					.catch(function (error) {
+						console.log(error);
 					})
 				} else {
 					axios.post('/register',{
 						username: this.username,
 						password: this.password
+					}).then(function (response) {
+						localStorage.setItem( 'token', JSON.stringify(response.data.accessToken) );
+						console.log(response);
+						this.$router.push({name:'contacts'})
+					})
+					.catch(function (error) {
+						console.log(error);
 					})
 				}
 			}
-		},
-		reset() {
-			this.$refs.form.reset();
-		},
-		resetValidation() {
-			this.$refs.form.resetValidation();
 		}
 	},
 	data: () => ({
@@ -118,7 +149,7 @@ export default {
 			{name:"Register", icon:"mdi-account-plus-outline"}
 		],
 		valid: true,
-	
+		loggingIn: true,
 		firstName: "",
 		lastName: "",
 		email: "",
@@ -133,13 +164,8 @@ export default {
 		],
 		show1: false,
 		rules: {
-			required: value => !!value || "Required.",
-			min: v => (v && v.length >= 6) || "Min 6 characters"
+			required: value => !!value || "Required."
 		}
 	}),
-	options: {
-      loggingIn: true,
-      shouldStayLoggedIn: true,
-    },
 };
 </script>
