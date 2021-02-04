@@ -5,6 +5,7 @@
 		</v-app-bar>
 		<v-main>
 			<router-view></router-view>
+			<router-view name="dialog"></router-view>
 		</v-main>
 	</v-app>
 </template>
