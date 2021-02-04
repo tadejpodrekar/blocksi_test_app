@@ -53,14 +53,14 @@
 			</v-tabs>
 		</div>
 		<v-dialog v-model="dialog" max-width="500px">
-			<v-card>
+			<v-card color="#ff6b6b" dark>
 				<v-card-title>Error</v-card-title>
 				<v-card-text>
 					<div>{{errorRes}}<br>{{errorText}}</div>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn text color="primary" @click="dialog = !dialog">
+					<v-btn text color="black" @click="dialog = !dialog">
 						Close
 					</v-btn>
 				</v-card-actions>
