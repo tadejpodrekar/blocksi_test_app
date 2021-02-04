@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
             if(match)
             {
                 const token = jwt.sign({ user }, process.env.JWT_SECRET)
-                res.status(200).json({
+                res.statusCode(200).json({
                     auth: true,
                     accessToken: token,
                     message: 'Successfully logged in'
@@ -27,19 +27,19 @@ router.post('/', async (req, res) => {
             else
             {
                 console.log('passwords do not match')
-                res.status(400).json({ message:'Username or password incorrect' })
+                res.status(400).send('Username or password incorrect')
             }
         }
         else
         {
             console.log('user not found')
-            res.status(400).json({ message:'Username or password incorrect' })
+            res.status(400).send('Username or password incorrect')
         }
     }
     catch(err)
     {
         console.log(err.message)
-        res.status(400).json({ message:err.message })
+        res.status(400).send(err.message)
     }
 })
 
