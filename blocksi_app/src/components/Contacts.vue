@@ -36,23 +36,22 @@
 		</v-navigation-drawer>
 		<v-container>
 			<v-row>
-				<v-col v-for="cont in contacts" :key="cont.firstName" cols="4">
-					<v-card class="mx-auto" max-width="344" outlined>
-						<v-list-item three-line>
+				<v-col v-for="cont in contacts" :key="cont._id" cols="4">
+					<v-card class="mx-auto" max-width="300" outlined :to="{ name: 'contactDialog', params: { id: cont._id } }">
+						<v-list-item five-line>
 							<v-list-item-content>
 								<v-list-item-title class="headline mb-1">
 									{{ cont.username }}
 								</v-list-item-title>
 								<v-list-item-subtitle>
 									{{ cont.firstName }} {{ cont.lastName }}
+									<br>
+									{{ cont.email }}
+									<br>
+									{{ cont.phoneNum }}
 								</v-list-item-subtitle>
 							</v-list-item-content>
 						</v-list-item>
-						<v-card-actions>
-							<v-btn outlined rounded text @click="dialog = !dialog, action = 'Edit'">
-								Edit
-							</v-btn>
-						</v-card-actions>
 					</v-card>
 				</v-col>
 			</v-row>
@@ -108,23 +107,29 @@ axios.defaults.headers.post['Content-Type'] = 'application/json'
 export default {
 	name: 'Contacts',
 	mounted () {
-		axios.get('/contacts', {headers:{'x-access-token':localStorage.getItem('token')}})
-			.then(response => (
-				console.log(response),
-				this.contacts = response.data.contacts,
-				this.user = response.data.username
-			))
-			.catch(err => (
-				console.log(err.message),
-				this.$router.push({name:'Entry'})
-			))
+		this.getContacts()
 	},
 	methods: {
 		validate() {
 			console.log('tester')
 			if(this.$refs.contactForm.validate()) {
 				console.log('valid')
-				this.dialog=false
+				axios.post('/contacts', {
+						username:this.username,
+						email:this.email,
+						firstName:this.firstName,
+						lastName:this.lastName,
+						phoneNum:this.phoneNum
+					},
+					{headers:{'x-access-token':localStorage.getItem('token')}})
+					.then(response => (
+						console.log(response),
+						this.getContacts(),
+						this.dialog=false
+					))
+					.catch(err => (
+						console.log(err.message)
+					))
 			}
 		},
 		exit() {
@@ -137,6 +142,28 @@ export default {
 			this.username = ''
 			this.email = ''
 			this.phoneNumber = ''
+		},
+		getContacts () {
+			axios.get('/contacts', {headers:{'x-access-token':localStorage.getItem('token')}})
+			.then(response => (
+				console.log(response),
+				this.contacts = response.data.contacts,
+				this.user = response.data.username
+			))
+			.catch(err => (
+				console.log(err.message),
+				this.$router.push({name:'Entry'})
+			))
+		}
+	},
+	computed: {
+		contacts: {
+			get: function () {
+				return this.conts
+			},
+			set: function (val) {
+				this.conts = val
+			}
 		}
 	},
 	data: () => ({
@@ -149,8 +176,8 @@ export default {
 		email: "",
 		username: "",
 		phoneNum: "",
-		contacts: [],
 		user: "",
+		conts: [],
         items: [
           { title: 'Contacts', icon: 'mdi-home-city' },
           { title: 'Add contact', icon: 'mdi-account' },
