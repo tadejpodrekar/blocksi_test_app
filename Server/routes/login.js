@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
             {
                 const token = jwt.sign({ user }, process.env.JWT_SECRET)
                 res.status(200).json({
-                    auth: true,
+                    username: user.username,
                     accessToken: token,
                     message: 'Successfully logged in'
                 })

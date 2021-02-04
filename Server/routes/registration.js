@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
         const token = jwt.sign({ user:newUser }, process.env.JWT_SECRET)
 
         res.status(201).json({
-            auth: true,
+            username: user.username,
             accessToken: token,
             message: 'Successfully registered user'
         })
