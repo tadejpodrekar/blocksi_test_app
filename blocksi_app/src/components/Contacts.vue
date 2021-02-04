@@ -16,7 +16,7 @@
 			</template>
 			<v-divider></v-divider>
 			<v-list dense>
-				<v-list-item @click="dialog=!dialog, action='Add'">
+				<v-list-item @click="dialog=!dialog">
 					<v-list-item-icon>
 						<v-icon>mdi-account-multiple-plus</v-icon>
 					</v-list-item-icon>
@@ -37,7 +37,7 @@
 		<v-container>
 			<v-row>
 				<v-col v-for="cont in contacts" :key="cont._id" cols="4">
-					<v-card class="mx-auto" max-width="300" outlined :to="{ name: 'contactDialog', params: { id: cont._id } }">
+					<v-card class="mx-auto" max-width="300" outlined @click="openDialog(cont._id)">
 						<v-list-item five-line>
 							<v-list-item-content>
 								<v-list-item-title class="headline mb-1">
@@ -59,7 +59,7 @@
 		<v-dialog v-model="dialog" max-width="500px" persistent>
 			<v-card class="px-4">
 				<v-card-title>
-					{{ action }} user
+					Add user
 				</v-card-title>
 				<v-card-text>
 					<v-form ref="contactForm" v-model="valid" lazy-validation>
@@ -84,10 +84,10 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn text color="primary" @click="dialog=!dialog, action='Edit',clear()">
+					<v-btn text color="primary" @click="dialog=!dialog, clear()">
 						Cancel
 					</v-btn>
-					<v-btn text color="primary" @click="validate(), action='Add',clear()">
+					<v-btn text color="primary" @click="validate(), clear()">
 						Save
 					</v-btn>
 				</v-card-actions>
@@ -141,9 +141,10 @@ export default {
 			this.lastName = ''
 			this.username = ''
 			this.email = ''
-			this.phoneNumber = ''
+			this.phoneNum = ''
 		},
 		getContacts () {
+			console.log('getContacs')
 			axios.get('/contacts', {headers:{'x-access-token':localStorage.getItem('token')}})
 			.then(response => (
 				console.log(response),
@@ -154,6 +155,10 @@ export default {
 				console.log(err.message),
 				this.$router.push({name:'Entry'})
 			))
+		},
+		openDialog(val){
+			this.oDialog = val,
+			this.$router.push({name: 'contactDialog', params: {id: val}})
 		}
 	},
 	computed: {
@@ -177,6 +182,7 @@ export default {
 		username: "",
 		phoneNum: "",
 		user: "",
+		oDialog: '',
 		conts: [],
         items: [
           { title: 'Contacts', icon: 'mdi-home-city' },
