@@ -9,19 +9,27 @@
 						</v-btn>
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-list-item-title>Jane Smith</v-list-item-title>
+						<v-list-item-title>{{user}}</v-list-item-title>
 						<v-list-item-subtitle>Logged In</v-list-item-subtitle>
 					</v-list-item-content>
 				</v-list-item>
 			</template>
 			<v-divider></v-divider>
 			<v-list dense>
-				<v-list-item v-for="item in items" :key="item.title" link>
+				<v-list-item @click="dialog=!dialog, action='Add'">
 					<v-list-item-icon>
-						<v-icon>{{ item.icon }}</v-icon>
+						<v-icon>mdi-account-multiple-plus</v-icon>
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-list-item-title>{{ item.title }}</v-list-item-title>
+						<v-list-item-title>Add contact</v-list-item-title>
+					</v-list-item-content>
+				</v-list-item>
+				<v-list-item @click="exit">
+					<v-list-item-icon>
+						<v-icon>mdi-exit-to-app</v-icon>
+					</v-list-item-icon>
+					<v-list-item-content>
+						<v-list-item-title>Logout</v-list-item-title>
 					</v-list-item-content>
 				</v-list-item>
 			</v-list>
@@ -49,28 +57,28 @@
 				</v-col>
 			</v-row>
 		</v-container>
-		<v-dialog v-model="dialog" max-width="500px">
+		<v-dialog v-model="dialog" max-width="500px" persistent>
 			<v-card class="px-4">
 				<v-card-title>
 					{{ action }} user
 				</v-card-title>
 				<v-card-text>
-					<v-form ref="registerForm" lazy-validation>
+					<v-form ref="contactForm" v-model="valid" lazy-validation>
 						<v-row>
 							<v-col cols="12">
 								<v-text-field v-model="username" :rules="[rules.required]" label="Username" prepend-icon="mdi-account-circle" required></v-text-field>
 							</v-col>
 							<v-col cols="12">
-								<v-text-field v-model="email" :rule="emailRules" label="E-mail" prepend-icon="mdi-email" required></v-text-field>
+								<v-text-field v-model="email" :rule="[rules.required, rules.emailRule]" label="E-mail" prepend-icon="mdi-email" required></v-text-field>
 							</v-col>
 							<v-col cols="12" sm="6" md="6">
-								<v-text-field v-model="firstName" :rules="[rules.required]" label="First Name" maxlength="20" prepend-icon="mdi-account-circle" required></v-text-field>
+								<v-text-field v-model="firstName" label="First Name" maxlength="20" prepend-icon="mdi-account-circle"></v-text-field>
 							</v-col>
 							<v-col cols="12" sm="6" md="6">
-								<v-text-field v-model="lastName" :rules="[rules.required]" label="Last Name" maxlength="20" required></v-text-field>
+								<v-text-field v-model="lastName" label="Last Name" maxlength="20"></v-text-field>
 							</v-col>
 							<v-col cols="12">
-								<v-text-field v-model="phoneNum" :rules="[rules.required]" label="Phone number" prepend-icon="mdi-phone" required></v-text-field>
+								<v-text-field v-model="phoneNum" label="Phone number" prepend-icon="mdi-phone"></v-text-field>
 							</v-col>
 						</v-row>
 					</v-form>
@@ -101,7 +109,8 @@ export default {
 		axios.get('/contacts')
 			.then(response => (
 				console.log(response),
-				this.contacts = response.data.contacts
+				this.contacts = response.data.contacts,
+				this.user = response.data.username
 			))
 			.catch(err => (
 				console.log(err.message),
@@ -110,11 +119,19 @@ export default {
 	},
 	methods: {
 		validate() {
-			this.dialog = !this.dialog
+			if(this.$refs.contactForm.validate()) {
+				console.log('valid')
+				this.dialog=false
+			}
+		},
+		exit() {
+			localStorage.clear()
+			this.$router.push({name:'Entry'})
 		}
 	},
 	data: () => ({
 		action: "Add",
+		valid: true,
 		dialog: false,
 		mini: true,
 		firstName: "",
@@ -123,16 +140,14 @@ export default {
 		username: "",
 		phoneNum: "",
 		contacts: [],
+		user: "",
         items: [
           { title: 'Contacts', icon: 'mdi-home-city' },
           { title: 'Add contact', icon: 'mdi-account' },
           { title: 'Logout', icon: 'mdi-account-group-outline' }
 		],
-		emailRules: [
-			v => !!v || "Required",
-			v => /.+@.+\..+/.test(v) || "E-mail must be valid"
-		],
 		rules: {
+			emailRule: v => /.+@.+\..+/.test(v) || "E-mail must be valid",
 			required: value => !!value || "Required."
 		}
 	}),
