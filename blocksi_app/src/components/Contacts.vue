@@ -78,7 +78,12 @@ export default {
 	data: () => ({
 		drawer: true,
 		mini: true,
-		contacts: []
+		contacts: [],
+        items: [
+          { title: 'Contacts', icon: 'mdi-home-city' },
+          { title: 'Add contact', icon: 'mdi-account' },
+          { title: 'Logout', icon: 'mdi-account-group-outline' }
+        ]
 	}),
 };
 </script>
