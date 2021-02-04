@@ -9,14 +9,13 @@ async function getContact(req, res, next) {
         {
             return res.status(404).json({ message: 'Cant find contact'})
         }
+        req.contact = contact
+        next()
     }
     catch(err)
     {
         return res.status(500).json({ message: err.message })
     }
-
-    res.contact = contact
-    next()
 }
 
 module.exports = getContact
