@@ -16,7 +16,7 @@
 			</template>
 			<v-divider></v-divider>
 			<v-list dense>
-				<v-list-item @click="dialog=!dialog, action='Add'">
+				<v-list-item @click="dialog=!dialog, action='Add', clear()">
 					<v-list-item-icon>
 						<v-icon>mdi-account-multiple-plus</v-icon>
 					</v-list-item-icon>
@@ -37,7 +37,7 @@
 		<v-container>
 			<v-row>
 				<v-col v-for="cont in contacts" :key="cont._id" cols="4">
-					<v-card class="mx-auto" max-width="300" outlined @click="dialog=!dialog, action='Edit', clear(), oDialog=cont._id">
+					<v-card class="mx-auto" max-width="300" outlined @click="dialog=!dialog, action='Edit', editContact(cont._id)">
 						<v-list-item five-line>
 							<v-list-item-content>
 								<v-list-item-title class="headline mb-1">
@@ -91,7 +91,7 @@
 						Cancel
 					</v-btn>
 					<v-btn text color="primary" @click="validate(), clear()">
-						Save
+						{{ action }}
 					</v-btn>
 				</v-card-actions>
 			</v-card>
@@ -164,14 +164,23 @@ export default {
 			))
 		},
 		getContact () {
-			axios.get('/contacts/'+this.$route.params.id, {headers:{'x-access-token':localStorage.getItem('token')}} )
+			axios.get('/contacts/'+this.oDialog, {headers:{'x-access-token':localStorage.getItem('token')}} )
 			.then(response => (
 				console.log(response),
-				this.contact = response.data.contact
+				this.contact = response.data.contact,
+				this.username = response.data.contact.username,
+				this.firstName = response.data.contact.firstName,
+				this.lastName = response.data.contact.lastName,
+				this.email = response.data.contact.email,
+				this.phoneNum = response.data.contact.phoneNum
 			))
 			.catch(err => (
 				console.log(err.message)
 			))
+		},
+		editContact (val) {
+			this.oDialog = val
+			this.getContact()
 		},
 		deleteContact() {
 			axios.delete('/contacts/'+this.oDialog, {
@@ -187,7 +196,7 @@ export default {
 		},
 		updateContact() {
 			if(this.$refs.contactForm.validate()) {
-				axios.put('/contacts/'+this.$route.params.id, {
+				axios.put('/contacts/'+this.oDialog, {
 						username:this.username,
 						email:this.email,
 						firstName:this.firstName,
@@ -197,7 +206,9 @@ export default {
 					{headers:{'x-access-token':localStorage.getItem('token')}} )
 				.then(response => (
 					console.log(response),
-					this.contacts = this.getContacts()
+					this.contacts = this.getContacts(),
+					this.oDialog='',
+					this.dialog=!this.dialog
 				))
 				.catch(err => (
 					console.log(err.message)
@@ -228,6 +239,7 @@ export default {
 		user: "",
 		oDialog: '',
 		conts: [],
+		contact: {},
 		rules: {
 			emailRule: v => /.+@.+\..+/.test(v) || "E-mail must be valid",
 			required: value => !!value || "Required."
