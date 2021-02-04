@@ -154,10 +154,6 @@ export default {
 		verify: "",
 		loginUsername: "",
 		loginPassword: "",
-		emailRules: [
-			v => !!v || "Required",
-			v => /.+@.+\..+/.test(v) || "E-mail must be valid"
-		],
 		show1: false,
 		rules: {
 			required: value => !!value || "Required."
