@@ -1,28 +1,5 @@
 <template>
 	<v-container>
-		<v-app-bar app color="primary" dark>
-				<div class="d-flex align-center">
-					<v-img
-						alt="Vuetify Logo"
-						class="shrink mr-2"
-						contain
-						src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-						transition="scale-transition"
-						width="40"
-					/>
-
-					<v-img
-						alt="Vuetify Name"
-						class="shrink mt-1 hidden-sm-and-down"
-						contain
-						min-width="100"
-						src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-						width="100"
-					/>
-				</div>
-
-				<v-spacer></v-spacer>
-		</v-app-bar>
 		<div id="formContainer">
 			<v-tabs v-model="tab" show-arrows background-color="blue accent-4" icons-and-text dark grow>
 				<v-tabs-slider color="blue darken-4"></v-tabs-slider>
@@ -36,10 +13,10 @@
 							<v-form ref="loginForm" v-model="valid" lazy-validation>
 								<v-row>
 									<v-col cols="12">
-										<v-text-field v-model="loginUsername" :rules="rules.required" label="Username" prepend-icon="mdi-account-circle" required></v-text-field>
+										<v-text-field v-model="loginUsername" :rule="rules.required" label="Username" prepend-icon="mdi-account-circle" required></v-text-field>
 									</v-col>
 									<v-col cols="12">
-										<v-text-field v-model="loginPassword" :append-icon="show1?'eye':'eye-off'" :rules="rules.required" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" prepend-icon="mdi-lock" @click:append="show1 = !show1"></v-text-field>
+										<v-text-field v-model="loginPassword" :append-icon="show1?'eye':'eye-off'" :rule="rules.required" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" prepend-icon="mdi-lock" @click:append="show1 = !show1"></v-text-field>
 									</v-col>
 									<v-col class="d-flex" cols="12" sm="6" xsm="12">
 									</v-col>
@@ -58,19 +35,19 @@
 							<v-form ref="registerForm" v-model="valid" lazy-validation>
 								<v-row>
 									<v-col cols="12" sm="6" md="6">
-										<v-text-field v-model="firstName" :rules="[rules.required]" label="First Name" maxlength="20" prepend-icon="mdi-account-circle" required></v-text-field>
+										<v-text-field v-model="firstName" :rule="rules.required" label="First Name" maxlength="20" prepend-icon="mdi-account-circle" required></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="6">
-										<v-text-field v-model="lastName" :rules="[rules.required]" label="Last Name" maxlength="20" required></v-text-field>
+										<v-text-field v-model="lastName" :rule="rules.required" label="Last Name" maxlength="20" required></v-text-field>
 									</v-col>
 									<v-col cols="12">
-										<v-text-field v-model="email" :rules="emailRules" label="E-mail" prepend-icon="mdi-email" required></v-text-field>
+										<v-text-field v-model="email" :rule="emailRules" label="E-mail" prepend-icon="mdi-email" required></v-text-field>
 									</v-col>
 									<v-col cols="12">
-										<v-text-field v-model="username" :rules="rules.required" label="Username" prepend-icon="mdi-account-circle" required></v-text-field>
+										<v-text-field v-model="username" :rule="rules.required" label="Username" prepend-icon="mdi-account-circle" required></v-text-field>
 									</v-col>
 									<v-col cols="12">
-										<v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="rules.required" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" prepend-icon="mdi-lock" @click:append="show1 = !show1"></v-text-field>
+										<v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rule="rules.required" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" prepend-icon="mdi-lock" @click:append="show1 = !show1"></v-text-field>
 									</v-col>
 									<v-col cols="12">
 										<v-text-field block v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required, passwordMatch]" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Confirm Password" prepend-icon="mdi-lock-outline" @click:append="show1 = !show1"></v-text-field>
@@ -117,24 +94,24 @@ export default {
 					axios.post('/login',{
 						username: this.loginUsername,
 						password: this.loginPassword
-					}).then(function (response) {
+					}).then(response => {
 						localStorage.setItem( 'token', response.data.accessToken )
 						console.log(response)
-						this.$router.push('contacts')
+						this.$router.push({name:'Contacts'})
 					})
-					.catch(function (error) {
+					.catch(error => {
 						console.log(error);
 					})
 				} else {
 					axios.post('/register',{
 						username: this.username,
 						password: this.password
-					}).then(function (response) {
+					}).then(response => {
 						localStorage.setItem( 'token', response.data.accessToken )
 						console.log(response)
-						this.$router.push('contacts')
+						this.$router.push('Contacts')
 					})
-					.catch(function (error) {
+					.catch(error => {
 						console.log(error)
 					})
 				}
