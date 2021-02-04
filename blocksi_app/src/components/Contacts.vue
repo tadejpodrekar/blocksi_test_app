@@ -70,7 +70,8 @@ export default {
 				this.contacts = response.data.contacts
 			))
 			.catch(err => (
-				console.log(err)
+				console.log(err.message),
+				this.$router.push({name:'Entry'})
 			))
 	},
 	methods: {
