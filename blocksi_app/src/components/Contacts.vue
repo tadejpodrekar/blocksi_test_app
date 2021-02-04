@@ -16,7 +16,7 @@
 			</template>
 			<v-divider></v-divider>
 			<v-list dense>
-				<v-list-item @click="dialog=!dialog">
+				<v-list-item @click="dialog=!dialog, action='Add'">
 					<v-list-item-icon>
 						<v-icon>mdi-account-multiple-plus</v-icon>
 					</v-list-item-icon>
@@ -37,7 +37,7 @@
 		<v-container>
 			<v-row>
 				<v-col v-for="cont in contacts" :key="cont._id" cols="4">
-					<v-card class="mx-auto" max-width="300" outlined @click="openDialog(cont._id)">
+					<v-card class="mx-auto" max-width="300" outlined @click="dialog=!dialog, action='Edit', clear(), oDialog=cont._id">
 						<v-list-item five-line>
 							<v-list-item-content>
 								<v-list-item-title class="headline mb-1">
@@ -59,7 +59,7 @@
 		<v-dialog v-model="dialog" max-width="500px" persistent>
 			<v-card class="px-4">
 				<v-card-title>
-					Add user
+					{{ action }} user
 				</v-card-title>
 				<v-card-text>
 					<v-form ref="contactForm" v-model="valid" lazy-validation>
@@ -83,8 +83,11 @@
 					</v-form>
 				</v-card-text>
 				<v-card-actions>
+					<v-btn v-if="action=='Edit'" color="red" text @click="deleteContact(), dialog=!dialog">
+						Delete
+					</v-btn>
 					<v-spacer></v-spacer>
-					<v-btn text color="primary" @click="dialog=!dialog, clear()">
+					<v-btn text color="primary" @click="dialog=!dialog, oDialog='', clear()">
 						Cancel
 					</v-btn>
 					<v-btn text color="primary" @click="validate(), clear()">
@@ -112,9 +115,12 @@ export default {
 	methods: {
 		validate() {
 			console.log('tester')
-			if(this.$refs.contactForm.validate()) {
-				console.log('valid')
-				axios.post('/contacts', {
+			if(this.action == 'Edit'){
+				console.log('edit')
+				this.updateContact()
+			} else if(this.action == 'Add'){
+				if(this.$refs.contactForm.validate()) {
+					axios.post('/contacts', {
 						username:this.username,
 						email:this.email,
 						firstName:this.firstName,
@@ -130,6 +136,7 @@ export default {
 					.catch(err => (
 						console.log(err.message)
 					))
+				}
 			}
 		},
 		exit() {
@@ -156,9 +163,46 @@ export default {
 				this.$router.push({name:'Entry'})
 			))
 		},
-		openDialog(val){
-			this.oDialog = val,
-			this.$router.push({name: 'contactDialog', params: {id: val}})
+		getContact () {
+			axios.get('/contacts/'+this.$route.params.id, {headers:{'x-access-token':localStorage.getItem('token')}} )
+			.then(response => (
+				console.log(response),
+				this.contact = response.data.contact
+			))
+			.catch(err => (
+				console.log(err.message)
+			))
+		},
+		deleteContact() {
+			axios.delete('/contacts/'+this.oDialog, {
+				headers:{'x-access-token':localStorage.getItem('token')}
+			})
+			.then(response => (
+				console.log(response),
+				this.contacts = this.getContacts()
+			))
+			.catch(err => (
+				console.log(err.message)
+			))
+		},
+		updateContact() {
+			if(this.$refs.contactForm.validate()) {
+				axios.put('/contacts/'+this.$route.params.id, {
+						username:this.username,
+						email:this.email,
+						firstName:this.firstName,
+						lastName:this.lastName,
+						phoneNum:this.phoneNum
+					},
+					{headers:{'x-access-token':localStorage.getItem('token')}} )
+				.then(response => (
+					console.log(response),
+					this.contacts = this.getContacts()
+				))
+				.catch(err => (
+					console.log(err.message)
+				))
+			}
 		}
 	},
 	computed: {
