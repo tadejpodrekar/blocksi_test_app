@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
             if(match)
             {
                 const token = jwt.sign({ user }, process.env.JWT_SECRET)
-                res.statusCode(200).json({
+                res.status(200).json({
                     auth: true,
                     accessToken: token,
                     message: 'Successfully logged in'
