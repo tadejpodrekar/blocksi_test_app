@@ -228,11 +228,6 @@ export default {
 		user: "",
 		oDialog: '',
 		conts: [],
-        items: [
-          { title: 'Contacts', icon: 'mdi-home-city' },
-          { title: 'Add contact', icon: 'mdi-account' },
-          { title: 'Logout', icon: 'mdi-account-group-outline' }
-		],
 		rules: {
 			emailRule: v => /.+@.+\..+/.test(v) || "E-mail must be valid",
 			required: value => !!value || "Required."
