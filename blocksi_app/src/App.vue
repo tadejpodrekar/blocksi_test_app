@@ -1,20 +1,17 @@
 <template>
-	<v-app>
+	<v-app id="app">
+		<v-app-bar app color="blue" dark>
+			<v-toolbar-title>Contacts App</v-toolbar-title>
+		</v-app-bar>
 		<v-main>
-			<Entry/>
+			<router-view></router-view>
 		</v-main>
 	</v-app>
 </template>
 
 <script>
-import Entry from './components/Entry';
-
 export default {
-	name: 'App',
-	components: {
-		Entry
-	},
-	data: () => ({
-	}),
+	name: 'app',
+	data: () => ({ drawer: null })
 };
 </script>
