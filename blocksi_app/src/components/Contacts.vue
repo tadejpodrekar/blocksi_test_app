@@ -9,7 +9,7 @@
 						</v-btn>
 					</v-list-item-icon>
 					<v-list-item-content>
-						<v-list-item-title>{{user}}</v-list-item-title>
+						<v-list-item-title>{{ user }}</v-list-item-title>
 						<v-list-item-subtitle>Logged In</v-list-item-subtitle>
 					</v-list-item-content>
 				</v-list-item>
@@ -44,7 +44,7 @@
 									{{ cont.username }}
 								</v-list-item-title>
 								<v-list-item-subtitle>
-									Greyhound<br>divisely hello coldly fonwderfully
+									{{ cont.firstName }} {{ cont.lastName }}
 								</v-list-item-subtitle>
 							</v-list-item-content>
 						</v-list-item>
@@ -85,7 +85,10 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn text color="primary" @click="validate, action='Add'">
+					<v-btn text color="primary" @click="dialog=!dialog, action='Edit',clear()">
+						Cancel
+					</v-btn>
+					<v-btn text color="primary" @click="validate(), action='Add',clear()">
 						Save
 					</v-btn>
 				</v-card-actions>
@@ -101,12 +104,11 @@
 <script>
 import axios from 'axios'
 axios.defaults.baseURL = 'http://localhost:5000/'
-axios.defaults.headers.common['x-access-token'] = localStorage.getItem('token')
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 export default {
 	name: 'Contacts',
 	mounted () {
-		axios.get('/contacts')
+		axios.get('/contacts', {headers:{'x-access-token':localStorage.getItem('token')}})
 			.then(response => (
 				console.log(response),
 				this.contacts = response.data.contacts,
@@ -119,6 +121,7 @@ export default {
 	},
 	methods: {
 		validate() {
+			console.log('tester')
 			if(this.$refs.contactForm.validate()) {
 				console.log('valid')
 				this.dialog=false
@@ -127,6 +130,13 @@ export default {
 		exit() {
 			localStorage.clear()
 			this.$router.push({name:'Entry'})
+		},
+		clear () {
+			this.firstName = ''
+			this.lastName = ''
+			this.username = ''
+			this.email = ''
+			this.phoneNumber = ''
 		}
 	},
 	data: () => ({
