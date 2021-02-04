@@ -7,14 +7,12 @@ const router = express.Router()
 
 router.post('/', async (req, res) => {
     const { username, password } = req.body
-
     try
     {
-        const user = await User.findOne({username:username})
+        var user = await User.findOne({username:username})
         if(user && user!=[])
         {
             const match = await bcrypt.compare(password, user.password)
-            console.log(match)
             if(match)
             {
                 const token = jwt.sign({ user }, process.env.JWT_SECRET)

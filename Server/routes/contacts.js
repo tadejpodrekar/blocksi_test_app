@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
     try
     {
         const userContacts = await User.findById(req.user._id).populate('contacts')
-        res.status(200).json({message:"returning all contacts", contacts:userContacts.contacts, username:req.user.username})
+        res.status(200).json({message:"returning all contacts", contacts:userContacts.contacts, username:userContacts.username})
     }
     catch(err)
     {
