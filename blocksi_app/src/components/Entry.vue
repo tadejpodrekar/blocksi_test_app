@@ -63,10 +63,24 @@
 				</v-tab-item>
 			</v-tabs>
 		</div>
+		<v-dialog v-model="dialog" max-width="500px">
+			<v-card>
+				<v-card-title>Error</v-card-title>
+				<v-card-text>
+					<div>{{errorRes}}<br>{{errorText}}</div>
+				</v-card-text>
+				<v-card-actions>
+					<v-spacer></v-spacer>
+					<v-btn text color="primary" @click="dialog = !dialog">
+						Close
+					</v-btn>
+				</v-card-actions>
+			</v-card>
+        </v-dialog>
 	</v-container>
 </template>
 
-<style>
+<style scoped>
 	#formContainer{
 		margin: auto;
 		margin-top: 50px;
@@ -100,7 +114,10 @@ export default {
 						this.$router.push({name:'Contacts'})
 					})
 					.catch(error => {
-						console.log(error);
+						console.log(error)
+						this.errorRes = error.message
+						this.errorText = 'Username or password incorrect'
+						this.dialog = true
 					})
 				} else {
 					axios.post('/register',{
@@ -109,17 +126,20 @@ export default {
 					}).then(response => {
 						localStorage.setItem( 'token', response.data.accessToken )
 						console.log(response)
-						this.$router.push('Contacts')
+						this.$router.push({name:'Contacts'})
 					})
 					.catch(error => {
 						console.log(error)
+						this.errorRes = error.message
+						this.errorText = 'Username already taken'
+						this.dialog = true
 					})
 				}
 			}
 		}
 	},
 	data: () => ({
-		dialog: true,
+		dialog: false,
 		tab: 0,
 		tabs: [
 			{name:"Login", icon:"mdi-account"},
@@ -127,6 +147,8 @@ export default {
 		],
 		valid: true,
 		loggingIn: true,
+		errorText: "",
+		errorRes: "",
 		firstName: "",
 		lastName: "",
 		email: "",
