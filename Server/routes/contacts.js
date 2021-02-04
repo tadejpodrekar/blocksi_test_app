@@ -69,11 +69,11 @@ router.put('/:id', getContact, async (req, res) => {
             const { username, email, firstName, lastName, phoneNum } = req.body
 
             let updateObj = {}
-            if(username) {updateObj.username = username}
-            if(email) {updateObj.email = email}
-            if(firstName) {updateObj.firstName = firstName}
-            if(lastName) {updateObj.lastName = lastName}
-            if(phoneNum) {updateObj.phoneNum = phoneNum}
+            if(username!=null) {updateObj.username = username}
+            if(email!=null) {updateObj.email = email}
+            if(firstName!=null) {updateObj.firstName = firstName}
+            if(lastName!=null) {updateObj.lastName = lastName}
+            if(phoneNum!=null) {updateObj.phoneNum = phoneNum}
 
             const foundContact = await Contact.updateOne({ _id: req.params.id }, updateObj)
             res.status(200).json({message:"Contact found", contact:foundContact})
