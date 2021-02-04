@@ -1,6 +1,6 @@
 <template>
 	<v-app id="app">
-		<v-app-bar app color="blue" dark>
+		<v-app-bar app color="primary" dark>
 			<v-toolbar-title>Contacts App</v-toolbar-title>
 		</v-app-bar>
 		<v-main>
