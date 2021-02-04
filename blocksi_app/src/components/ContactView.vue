@@ -33,7 +33,7 @@
 				<v-btn text color="primary" @click="close()">
 					Cancel
 				</v-btn>
-				<v-btn text color="primary">
+				<v-btn text color="primary" @click="updateContact()">
 					Save
 				</v-btn>
 			</v-card-actions>
@@ -52,23 +52,64 @@ axios.defaults.headers.post['Content-Type'] = 'application/json'
 export default {
 	name: 'Contacts',
 	mounted () {
+		this.getContact()
 	},
 	methods: {
 		close () {
-			this.$router.back()
+			this.$router.push({name: 'Contacts'})
 		},
-		deleteContact () {
+		getContact () {
+			axios.get('/contacts/'+this.$route.params.id, {headers:{'x-access-token':localStorage.getItem('token')}} )
+			.then(response => (
+				console.log(response),
+				this.contact = response.data.contact
+			))
+			.catch(err => (
+				console.log(err.message)
+			))
+		},
+		deleteContact() {
+			axios.delete('/contacts/'+this.$route.params.id, {
+				headers:{'x-access-token':localStorage.getItem('token')}
+			})
+			.then(response => (
+				console.log(response),
+				this.contact = response.data.contact
+			))
+			.catch(err => (
+				console.log(err.message)
+			)),
+			this.close()
+		},
+		updateContact() {
+			if(this.$refs.contactForm.validate()) {
+				axios.put('/contacts/'+this.$route.params.id, {
+						username:this.username,
+						email:this.email,
+						firstName:this.firstName,
+						lastName:this.lastName,
+						phoneNum:this.phoneNum
+					},
+					{headers:{'x-access-token':localStorage.getItem('token')}} )
+				.then(response => (
+					console.log(response)
+
+				))
+				.catch(err => (
+					console.log(err.message)
+				)),
+				this.close()
+			}
 		}
-	},
-	computed: {
 	},
 	data: () => ({
 		valid: true,
 		dialog: true,
+		contact: {},
+		username: "",
+		email: "",
 		firstName: "",
 		lastName: "",
-		email: "",
-		username: "",
 		phoneNum: "",
 		rules: {
 			emailRule: v => /.+@.+\..+/.test(v) || "E-mail must be valid",
