@@ -9,8 +9,12 @@ async function getContact(req, res, next) {
         {
             return res.status(404).json({ message: 'Cant find contact'})
         }
-        req.contact = contact
-        next()
+        if(req.user._id == contact.createdBy){
+            req.contact = contact
+            next()
+        } else {
+            res.status(403).json({ message:'Cannot access contact created by someone else' })
+        }
     }
     catch(err)
     {
