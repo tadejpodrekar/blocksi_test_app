@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
     {
         const { username, email, firstName, lastName, phoneNum } = req.body
 
-        let contact = new Contact({ username, email, firstName, lastName, phoneNum })
+        let contact = new Contact({ username, email, firstName, lastName, phoneNum, createdBy:req.user._id })
         contact = await contact.save()
         await User.findOneAndUpdate({_id: req.user._id}, {$push: { "contacts": contact._id }})
         res.status(201).json({
