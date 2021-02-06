@@ -37,7 +37,7 @@
 		<v-container>
 			<v-row>
 				<v-col v-for="cont in contacts" :key="cont._id" cols="4">
-					<v-card class="mx-auto" max-width="300" outlined @click="dialog=!dialog, action='Edit', editContact(cont._id)">
+					<v-card class="mx-auto" max-width="300" outlined @click="dialog=!dialog, action='Edit', clear(), editContact(cont._id)">
 						<v-list-item five-line>
 							<v-list-item-content>
 								<v-list-item-title class="headline mb-1">
@@ -160,7 +160,7 @@ export default {
 			))
 		},
 		getContact () {
-			axios.get('/contacts/'+this.oDialog, {headers:{'x-access-token':localStorage.getItem('token')}} )
+			axios.get('/contacts/'+ this.oDialog, {headers:{'x-access-token':localStorage.getItem('token')}} )
 			.then(response => (
 				console.log(response),
 				this.contact = response.data.contact,
