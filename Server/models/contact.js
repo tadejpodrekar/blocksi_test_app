@@ -17,6 +17,10 @@ const contactSchema = new mongoose.Schema({
     },
     phoneNum:{
         type:String
+    },
+    createdBy:{
+        type:String,
+        required:true
     }
 })
 
